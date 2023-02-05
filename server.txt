@@ -11,5 +11,6 @@ chmod 700 get_helm.sh
 cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
 helm repo add mongodb https://mongodb.github.io/helm-charts
 helm install community-operator mongodb/community-operator
-wget https://raw.githubusercontent.com/mongodb/mongodb-kubernetes-operator/master/config/samples/mongodb.com_v1_mongodbcommunity_cr.yaml
+
+k apply -f mongodb.com_v1_mongodbcommunity_cr.yaml
 
