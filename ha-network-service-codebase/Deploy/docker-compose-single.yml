@@ -1,0 +1,64 @@
+version: '3.7'
+
+services:
+  business:
+    container_name: careerhack-business
+    image: ${CAREERHACK_BUSINESS_IMG:-careerhack-business}
+    build:
+      context: ../Business
+      cache_from:
+        - ${CAREERHACK_BUSINESS_CACHE_IMG}
+    # volumes:
+    #   - ../Business/app:/app/app
+    entrypoint: [""]
+    command: ["python3","app/main.py"]
+    environment:
+      - WEB_PORT=8100
+      - INVENTORY_URL=http://${INVENTORY_URL}:8200/api
+      - STORAGE_URL=http://${STORAGE_URL}:8300/api
+    ports:
+      - 8100:8100
+    restart: always      
+
+  inventory:
+    container_name: careerhack-inventory
+    image: ${CAREERHACK_INVENTORY_IMG:-careerhack-inventory}
+    build:
+      context: ../Inventory
+      cache_from:
+        - ${CAREERHACK_INVENTORY_CACHE_IMG}
+    # volumes:
+    #   - ../Inventory/app:/app/app
+    entrypoint: [""]
+    command: ["python3","app/main.py"]
+    environment:
+      - WEB_PORT=8200
+    ports:
+      - 8200:8200
+    restart: always
+
+  storage:
+    container_name: careerhack-storage
+    image: ${CAREERHACK_STORAGE_IMG:-careerhack-storage}
+    build:
+      context: ../Storage
+      cache_from:
+        - ${CAREERHACK_STORAGE_CACHE_IMG}
+    # volumes:
+    #   - ../Storage/app:/app/app
+    entrypoint: [""]
+    command: ["python3","app/main.py"]
+    environment:
+      - WEB_PORT=8300
+    ports:
+      - 8300:8300
+    restart: always
+
+  proxy:
+    container_name: careerhack-proxy
+    image: nginx:1.23.3-alpine
+    ports:
+      - 80:80
+    volumes:
+      - ../LoadBalance/nginx.conf:/etc/nginx/nginx.conf
+    restart: always
