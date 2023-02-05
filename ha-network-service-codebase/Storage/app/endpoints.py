@@ -9,7 +9,7 @@ from app.schema import Result
 from app.settings import get_settings
 from app.settings import Settings
 from fastapi import FastAPI
-
+import pymongo
 
 logger: logging.Logger = logging.getLogger(__name__)
 
@@ -21,20 +21,27 @@ CACHE: dict[
     str, dict[str, list[Record]],
 ] = defaultdict(lambda: defaultdict(list))
 
+client = pymongo.MongoClient('mongodb+srv://mongodb:mongodb@mongodb-svc.default.svc.cluster.local/?replicaSet=mongodb&ssl=false')
+#client = pymongo.MongoClient('mongodb://root:zAfHiERbzQ@192.168.100.205:27017/?authMechanism=DEFAULT')
+db = client["db"]
+col = db["records"]
 
 @app.post('/records')
 def save(record: Record) -> Result:
-    location_dict = CACHE[record.location]
-    records = location_dict[record.timestamp[0:10]]  # datetime to date
-    records.append(record)
+    #location_dict = CACHE[record.location]
+    #records = location_dict[record.timestamp[0:10]]  # datetime to date
+    #records.append(record)
+    col.insert_one(record.dict())
     return Result.ok()
 
 
 @app.get('/records')
 def query(location: str, date: str) -> list[Record]:
-    if location_dict := CACHE.get(location):
-        return location_dict.get(date)
-    return []
+    #if location_dict := CACHE.get(location):
+    #    return location_dict.get(date)
+     #return []
+    records=col.find({ "location": location , "timestamp": { "$regex": "^" + date } })
+    return [ Record(**record) for record in records]
 
 
 @app.get('/report')
@@ -51,5 +58,6 @@ def report(location: str, date: str) -> Report:
 
 @app.post('/clean')
 def clean() -> Result:
-    CACHE.clear()
+    #CACHE.clear()
+    col.delete_many({})
     return Result.ok()
