@@ -29,7 +29,13 @@ repository: Repository = RestRepository()
 
 @app.post('/order')
 def order(orders: Orders) -> Result:
-    response = requests.post(url=URL_MATERIAL, json=orders.data.dict())
+    #response = requests.post(url=URL_MATERIAL, json=orders.data.dict())
+    while True:
+        try:
+            response = requests.post(url=URL_MATERIAL, json=orders.data.dict())
+        except requests.exceptions.ConnectionError:
+            continue
+        break
     inventory: Inventory = Inventory(**response.json())
     record: Record = order_to_record(orders)
     record.material = inventory.material

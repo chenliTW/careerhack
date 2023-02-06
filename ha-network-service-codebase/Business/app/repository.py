@@ -37,13 +37,31 @@ URL_SAVE_RECORD: str = f'{settings.STORAGE_URL}/records'
 class RestRepository(Repository):
 
     def save(self, record: Record) -> bool:
-        response = requests.post(url=URL_SAVE_RECORD, json=record.dict())
+        #response = requests.post(url=URL_SAVE_RECORD, json=record.dict())
+        while True:
+            try:
+                response = requests.post(url=URL_SAVE_RECORD, json=record.dict())
+            except requests.exceptions.ConnectionError:
+                continue
+            break
         return Result(**response.json())
 
     def query(self, location: str, date: str) -> list[Record]:
         url = f'{settings.STORAGE_URL}/records?location={location}&date={date}'
-        return requests.get(url=url).json()
+        #return requests.get(url=url).json()
+        while True:
+            try:
+                return requests.get(url=url).json()
+            except requests.exceptions.ConnectionError:
+                continue
+            break
 
     def report(self, location: str, date: str) -> Report:
         url = f'{settings.STORAGE_URL}/report?location={location}&date={date}'
-        return Report(**requests.get(url=url).json())
+        #return Report(**requests.get(url=url).json())
+        while True:
+            try:
+                return Report(**requests.get(url=url).json())
+            except requests.exceptions.ConnectionError:
+                continue
+            break
