@@ -14,3 +14,6 @@ helm install community-operator mongodb/community-operator
 
 k apply -f mongodb.com_v1_mongodbcommunity_cr.yaml
 
+
+kubectl exec -it mongosh -- mongosh  "mongodb+srv://mongodb:mongodb@mongodb-svc.default.svc.cluster.local/admin?replicaSet=mongodb&ssl=false"
+db.getMongo().setReadPref("primaryPreferred")
