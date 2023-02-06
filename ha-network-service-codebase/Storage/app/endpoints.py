@@ -61,3 +61,7 @@ def clean() -> Result:
     #CACHE.clear()
     col.delete_many({})
     return Result.ok()
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}

@@ -33,3 +33,7 @@ def material(data: Data) -> Inventory:
 
 def _signature(total: int) -> str:
     return base64.b64encode(str(total).encode('UTF-8')).decode('UTF-8')
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}

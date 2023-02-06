@@ -45,3 +45,7 @@ def query(location: str, date: str) -> list[Record]:
 @app.post('/report')
 def report(location: str, date: str) -> Report:
     return repository.report(location=location, date=date)
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
