@@ -7,12 +7,31 @@ spec:
   selector:
     matchLabels:
       app: careerhack-business
-  replicas: 5
+  replicas: 1
   template:
     metadata:
       labels:
         app: careerhack-business
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - node1
+                - node4
+                - node5
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - node1
       containers:
       - name: careerhack-business
         image: le3721/careerhack-business:latest
@@ -43,12 +62,31 @@ spec:
   selector:
     matchLabels:
       app: careerhack-inventory
-  replicas: 5
+  replicas: 1
   template:
     metadata:
       labels:
         app: careerhack-inventory
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - node2
+                - node4
+                - node5
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - node2
       containers:
       - name: careerhack-inventory
         image: le3721/careerhack-inventory:latest
@@ -75,12 +113,31 @@ spec:
   selector:
     matchLabels:
       app: careerhack-storage
-  replicas: 5
+  replicas: 1
   template:
     metadata:
       labels:
         app: careerhack-storage
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - node3
+                - node4
+                - node5
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - node3
       containers:
       - name: careerhack-storage
         image: le3721/careerhack-storage:latest
