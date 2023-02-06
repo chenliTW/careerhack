@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: careerhack-business
-  replicas: 1
+  replicas: 5
   template:
     metadata:
       labels:
@@ -42,7 +42,7 @@ spec:
   selector:
     matchLabels:
       app: careerhack-inventory
-  replicas: 1
+  replicas: 5
   template:
     metadata:
       labels:
@@ -73,7 +73,7 @@ spec:
   selector:
     matchLabels:
       app: careerhack-storage
-  replicas: 1
+  replicas: 5
   template:
     metadata:
       labels:
