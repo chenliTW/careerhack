@@ -20,4 +20,12 @@ db.getMongo().setReadPref("primaryPreferred")
 db.getMongo().setReadPref("nearest")
 
 ## crontab
-kubectl rollout restart deployment careerhack-storage
+* * * * * sleep 5 && bash /root/rollout.sh
+* * * * * sleep 15 && bash /root/rollout.sh
+* * * * * sleep 25 && bash /root/rollout.sh
+* * * * * sleep 35 && bash /root/rollout.sh
+* * * * * sleep 45 && bash /root/rollout.sh
+* * * * * sleep 55 && bash /root/rollout.sh
+
+
+change imagePullPolicy
