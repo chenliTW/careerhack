@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: careerhack-business
-  replicas: 2
+  replicas: 4
   template:
     metadata:
       labels:
@@ -21,7 +21,6 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - node1
                 - node4
                 - node5
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -54,6 +53,13 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 1
           failureThreshold: 4
+        resources:
+          limits:
+            cpu: "2"
+            memory: 8192M
+          requests:
+            cpu: "0.2"
+            memory: 200M
       tolerations:
       - key: "node.kubernetes.io/unreachable"
         operator: "Exists"
@@ -114,6 +120,13 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 1
           failureThreshold: 4
+        resources:
+          limits:
+            cpu: "2"
+            memory: 8192M
+          requests:
+            cpu: "0.2"
+            memory: 200M
       tolerations:
       - key: "node.kubernetes.io/unreachable"
         operator: "Exists"
@@ -132,7 +145,7 @@ spec:
   selector:
     matchLabels:
       app: careerhack-storage
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -147,8 +160,6 @@ spec:
                 operator: In
                 values:
                 - node3
-                - node4
-                - node5
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
             preference:
@@ -174,6 +185,13 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 1
           failureThreshold: 4
+        resources:
+          limits:
+            cpu: "2"
+            memory: 8192M
+          requests:
+            cpu: "0.2"
+            memory: 200M
       tolerations:
       - key: "node.kubernetes.io/unreachable"
         operator: "Exists"

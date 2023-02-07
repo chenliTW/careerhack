@@ -29,6 +29,23 @@ spec:
     spec:
       template:
         spec:
+          containers:
+            - name: mongod
+              resources:
+                limits:
+                  cpu: "2"
+                  memory: 8192M
+                requests:
+                  cpu: "0.2"
+                  memory: 200M
+            - name: mongodb-agent
+              resources:
+                limits:
+                  cpu: "2"
+                  memory: 8192M
+                requests:
+                  cpu: "0.2"
+                  memory: 200M
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
