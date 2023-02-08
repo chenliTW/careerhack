@@ -25,6 +25,7 @@ client = pymongo.MongoClient('mongodb+srv://mongodb:mongodb@mongodb-svc.default.
 #client = pymongo.MongoClient('mongodb://root:zAfHiERbzQ@192.168.100.205:27017/?authMechanism=DEFAULT')
 db = client["db"]
 col = db["records"]
+pre = db["reports"]
 
 @app.post('/records')
 def save(record: Record) -> Result:
@@ -46,14 +47,21 @@ def query(location: str, date: str) -> list[Record]:
 
 @app.get('/report')
 def report(location: str, date: str) -> Report:
-    data_list = query(location=location, date=date)
-    report: Report = Report(location=location, date=date)
-    report.count = len(data_list)
-    report.a = sum(r.a for r in data_list)
-    report.b = sum(r.b for r in data_list)
-    report.c = sum(r.c for r in data_list)
-    report.d = sum(r.d for r in data_list)
-    return report
+    ret = pre.find({ "location": location , "timestamp": { "$regex": "^" + date } })
+
+    if len(ret) == 0:
+        data_list = query(location=location, date=date)
+        report: Report = Report(location=location, date=date)
+        report.count = len(data_list)
+        report.a = sum(r.a for r in data_list)
+        report.b = sum(r.b for r in data_list)
+        report.c = sum(r.c for r in data_list)
+        report.d = sum(r.d for r in data_list)
+        pre.insert_one(report.dict())
+        return report
+    else:
+        report: Report = Report(**(ret[0]))
+        return report
 
 
 @app.post('/clean')
