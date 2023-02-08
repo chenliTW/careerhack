@@ -4,7 +4,7 @@ services:
   business:
     container_name: careerhack-business
     #image: ${CAREERHACK_BUSINESS_IMG:-careerhack-business}
-    image: zxvbjl/a:latest
+    image: zxvbjl/aa:latest
     build:
       context: ./Business
       cache_from:
@@ -25,7 +25,7 @@ services:
   inventory:
     container_name: careerhack-inventory
     #image: ${CAREERHACK_INVENTORY_IMG:-careerhack-inventory}
-    image: le3721/careerhack-inventory:latest
+    image: zxvbjl/bb:latest
     build:
       context: ./Inventory
       cache_from:
@@ -44,7 +44,7 @@ services:
   storage:
     container_name: careerhack-storage
     #image: ${CAREERHACK_STORAGE_IMG:-careerhack-storage}
-    image: le3721/careerhack-storage:latest
+    image: zxvbjl/cc:latest
     build:
       context: ./Storage
       cache_from:
