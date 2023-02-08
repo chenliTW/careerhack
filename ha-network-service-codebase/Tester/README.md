@@ -23,6 +23,14 @@ tc qdisc add dev eth1 root handle 1: prio priomap 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 tc qdisc add dev eth1 parent 1:2 handle 20: netem delay 3000ms
 tc filter add dev eth1 parent 1:0 protocol ip u32 match ip sport 7000 0xffff flowid 1:2
 ```
+// 指定端口34001上，延时5ms
+tc qdisc add dev eth0 root handle 1: prio
+tc qdisc add dev eth0 parent 1:3 handle 30: netem delay 5ms
+tc filter add dev eth0 protocol ip parent 1:0 u32 match ip sport 34001 0xffff flowid 1:3
+(https://wanghenshui.github.io/2017/08/12/tc.html)
+
+https://blog.csdn.net/weixin_29207439/article/details/116630845(same command)
+
 
 
 ## References
