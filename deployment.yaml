@@ -37,13 +37,13 @@ spec:
           value: "http://careerhack-storage:8300/api"
         ports:
         - containerPort: 8100
-        livenessProbe:
-          httpGet:
-            path: /api/health
-            port: 8100
-          initialDelaySeconds: 5
-          periodSeconds: 1
-          failureThreshold: 2
+        #livenessProbe:
+        #  httpGet:
+        #    path: /api/health
+        #    port: 8100
+        #  initialDelaySeconds: 5
+        #  periodSeconds: 1
+        #  failureThreshold: 5
         resources:
           limits:
             cpu: "2"
@@ -68,6 +68,7 @@ metadata:
   annotations:
     downscaler/exclude: "true"
 spec:
+  podManagementPolicy: Parallel
   serviceName: "careerhack-inventory"
   selector:
     matchLabels:
@@ -102,13 +103,13 @@ spec:
               fieldPath: spec.nodeName
         ports:
         - containerPort: 8200
-        livenessProbe:
-          httpGet:
-            path: /api/health
-            port: 8200
-          initialDelaySeconds: 5
-          periodSeconds: 1
-          failureThreshold: 2
+        #livenessProbe:
+        #  httpGet:
+        #    path: /api/health
+        #    port: 8200
+        #  initialDelaySeconds: 5
+        #  periodSeconds: 1
+        #  failureThreshold: 2
         readinessProbe:
           exec:
             command:
@@ -142,6 +143,7 @@ metadata:
   annotations:
     downscaler/exclude: "true"
 spec:
+  podManagementPolicy: Parallel
   serviceName: "careerhack-storage"
   selector:
     matchLabels:
@@ -176,13 +178,13 @@ spec:
               fieldPath: spec.nodeName
         ports:
         - containerPort: 8300
-        livenessProbe:
-          httpGet:
-            path: /api/health
-            port: 8300
-          initialDelaySeconds: 5
-          periodSeconds: 1
-          failureThreshold: 2
+        #livenessProbe:
+        # httpGet:
+        #    path: /api/health
+        #    port: 8300
+        #  initialDelaySeconds: 5
+        #  periodSeconds: 1
+        #  failureThreshold: 2
         readinessProbe:
           exec:
             command:
