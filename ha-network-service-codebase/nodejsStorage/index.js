@@ -7,11 +7,11 @@ const mongoose=require('mongoose');
 const bodyParser = require('body-parser');
 app.use(bodyParser.json()); 
 
-mongoose.connect("mongodb+srv://mongodb:mongodb@mongodb-svc.default.svc.cluster.local/?replicaSet=mongodb&ssl=false");
+mongoose.connect("mongodb+srv://mongodb:mongodb@mongodb-svc.default.svc.cluster.local/admin?replicaSet=mongodb&ssl=false");
 
 var Record = new mongoose.Schema({
-    location: String,
-    timestamp: String,
+    location: { type: String, index: true },
+    timestamp: { type: String, index: true },
     signature: String,
     material: Number,
     a: Number,
@@ -21,9 +21,9 @@ var Record = new mongoose.Schema({
 });
 var records = mongoose.model('records', Record);
 
-var Report = new mongoose.Schema({
-    location: String,
-    date: String,
+/*var Report = new mongoose.Schema({
+    location: { type: String, index: true },
+    date: { type: String, index: true },
     count: Number,
     material: Number,
     a: Number,
@@ -31,7 +31,7 @@ var Report = new mongoose.Schema({
     c: Number,
     d: Number
 });
-var reports = mongoose.model('reports', Report);
+var reports = mongoose.model('reports', Report);*/
 
 app.post('/api/records', (req, res) => {
     records.create({
@@ -53,7 +53,7 @@ app.post('/api/records', (req, res) => {
 })
 
 app.get('/api/records', (req, res) => {
-    records.find({location: req.query["location"],timestamp:{$regex:`^${req.query["date"]}`}}, (err, records) => {
+    records.find({location: req.query["location"],timestamp:{$regex:`^${req.query["date"]}`}},'-_id -__v', (err, records) => {
         if (err) {
             res.json([]);
         } else {
@@ -63,11 +63,32 @@ app.get('/api/records', (req, res) => {
 })
 
 app.get('/api/report', (req, res) => {
-    res.send('Hello World!')
+    records.find({location: req.query["location"],timestamp:{$regex:`^${req.query["date"]}`}},'-_id -__v', (err, records) => {
+        if (err) {
+            res.json([]);
+        } else {
+            let A=0,B=0,C=0,D=0;
+            for (let i=0;i<records.length;i++) {
+                A+=records[i].a;
+                B+=records[i].b;
+                C+=records[i].c;
+                D+=records[i].d;
+            }
+            res.json({location: req.query["location"],
+                    date: req.query["date"],
+                    count: records.length,
+                    material: 0,
+                    a: A,
+                    b: B,
+                    c: C,
+                    d: D});
+        }
+    });
 })
 
 app.get('/api/clean', (req, res) => {
-    res.send('Hello World!')
+    records.deleteMany({});
+    res.json({status: "ok"});
 })
 
 app.get("api/health", (req, res) => {

@@ -6,4 +6,5 @@ COPY package.json .
 RUN npm install
 COPY index.js .
 COPY check-readiness.sh .
-ENTRYPOINT node index.js
+RUN npm install pm2@latest -g
+ENTRYPOINT pm2-runtime -i 5 index.js

@@ -12,7 +12,7 @@ podhealth() {
                 return 1
             fi
           else
-            return 1
+            return 0
         fi
 }
 

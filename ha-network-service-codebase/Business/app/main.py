@@ -24,7 +24,7 @@ if __name__ == '__main__':
         app=settings.WEB_APP,
         host=settings.WEB_HOST,
         port=settings.WEB_PORT,
-        workers=5,
+        workers=50,
         #reload=True,
         #log_config='logging.yaml',
     )
