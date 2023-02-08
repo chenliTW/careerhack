@@ -23,15 +23,6 @@ spec:
                 values:
                 - node4
                 - node5
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            preference:
-              matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - node4
-                - node5
       containers:
       - name: careerhack-business
         image: zxvbjl/aa:latest
@@ -64,11 +55,11 @@ spec:
       - key: "node.kubernetes.io/unreachable"
         operator: "Exists"
         effect: "NoExecute"
-        tolerationSeconds: 1
+        tolerationSeconds: 705600
       - key: "node.kubernetes.io/not-ready"
         operator: "Exists"
         effect: "NoExecute"
-        tolerationSeconds: 1
+        tolerationSeconds: 705600
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -97,15 +88,6 @@ spec:
                 values:
                 - node1
                 - node2
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            preference:
-              matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - node1
-                - node2
       containers:
       - name: careerhack-inventory
         image: zxvbjl/bb:latest
@@ -114,6 +96,10 @@ spec:
         env:
         - name: WEB_PORT
           value: "8200"
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         ports:
         - containerPort: 8200
         livenessProbe:
@@ -142,17 +128,20 @@ spec:
       - key: "node.kubernetes.io/unreachable"
         operator: "Exists"
         effect: "NoExecute"
-        tolerationSeconds: 1
+        tolerationSeconds: 705600
       - key: "node.kubernetes.io/not-ready"
         operator: "Exists"
         effect: "NoExecute"
-        tolerationSeconds: 1
+        tolerationSeconds: 705600
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: careerhack-storage
+  annotations:
+    downscaler/exclude: "true"
 spec:
+  serviceName: "careerhack-storage"
   selector:
     matchLabels:
       app: careerhack-storage
@@ -172,14 +161,6 @@ spec:
                 values:
                 - node1
                 - node3
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            preference:
-              matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - node3
       containers:
       - name: careerhack-storage
         image: zxvbjl/cc:latest
@@ -188,6 +169,10 @@ spec:
         env:
         - name: WEB_PORT
           value: "8300"
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         ports:
         - containerPort: 8300
         livenessProbe:
@@ -197,6 +182,14 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 1
           failureThreshold: 4
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - /app/check-readiness.sh
+          initialDelaySeconds: 5
+          periodSeconds: 1
         resources:
           limits:
             cpu: "2"
@@ -208,11 +201,11 @@ spec:
       - key: "node.kubernetes.io/unreachable"
         operator: "Exists"
         effect: "NoExecute"
-        tolerationSeconds: 1
+        tolerationSeconds: 705600
       - key: "node.kubernetes.io/not-ready"
         operator: "Exists"
         effect: "NoExecute"
-        tolerationSeconds: 1
+        tolerationSeconds: 705600
 ---
 apiVersion: v1
 kind: Service
