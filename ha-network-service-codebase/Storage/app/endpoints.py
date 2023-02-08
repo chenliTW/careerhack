@@ -47,9 +47,9 @@ def query(location: str, date: str) -> list[Record]:
 
 @app.get('/report')
 def report(location: str, date: str) -> Report:
-    ret = pre.find({ "location": location , "timestamp": { "$regex": "^" + date } })
-    ret = [ Record(**record) for record in ret]
-    if len(ret) == 0:
+    reports = pre.find({ "location": location , "date": date })
+    reports = [ Report(**report) for report in reports]
+    if len(reports) == 0:
         data_list = query(location=location, date=date)
         report: Report = Report(location=location, date=date)
         report.count = len(data_list)
@@ -60,14 +60,14 @@ def report(location: str, date: str) -> Report:
         pre.insert_one(report.dict())
         return report
     else:
-        report: Report = Report(**(ret[0]))
-        return report
+        return reports[0]
 
 
 @app.post('/clean')
 def clean() -> Result:
     #CACHE.clear()
     col.delete_many({})
+    pre.delete_many({})
     return Result.ok()
 
 @app.get("/health")
