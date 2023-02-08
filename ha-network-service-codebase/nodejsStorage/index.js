@@ -3,6 +3,11 @@ const app = express()
 const port = 8300
 
 const mongoose=require('mongoose');
+const cachegoose = require('recachegoose');
+
+cachegoose(mongoose, {
+    engine: 'memory'
+});
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json()); 
@@ -19,6 +24,7 @@ var Record = new mongoose.Schema({
     c: Number,
     d: Number
 });
+Record.index({location: 1, timestamp: 1});
 var records = mongoose.model('records', Record);
 
 /*var Report = new mongoose.Schema({
@@ -53,7 +59,7 @@ app.post('/api/records', (req, res) => {
 })
 
 app.get('/api/records', (req, res) => {
-    records.find({location: req.query["location"],timestamp:{$regex:`^${req.query["date"]}`}},'-_id -__v', (err, records) => {
+    records.find({location: req.query["location"],timestamp:{$regex:`^${req.query["date"]}`}},'-_id -__v').cache(120).exec((err, records) => {
         if (err) {
             res.json([]);
         } else {
@@ -63,7 +69,7 @@ app.get('/api/records', (req, res) => {
 })
 
 app.get('/api/report', (req, res) => {
-    records.find({location: req.query["location"],timestamp:{$regex:`^${req.query["date"]}`}},'-_id -__v', (err, records) => {
+    records.find({location: req.query["location"],timestamp:{$regex:`^${req.query["date"]}`}},'-_id -__v').cache(120).exec((err, records) => {
         if (err) {
             res.json([]);
         } else {
