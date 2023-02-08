@@ -168,7 +168,6 @@ spec:
       - name: careerhack-storage
         image: zxvbjl/cc:latest
         imagePullPolicy: Always
-        command: ["python3","app/main.py"]
         env:
         - name: WEB_PORT
           value: "8300"
