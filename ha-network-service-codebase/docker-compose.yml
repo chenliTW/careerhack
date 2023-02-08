@@ -4,7 +4,7 @@ services:
   business:
     container_name: careerhack-business
     #image: ${CAREERHACK_BUSINESS_IMG:-careerhack-business}
-    image: le3721/careerhack-business:latest 
+    image: zxvbjl/a:latest
     build:
       context: ./Business
       cache_from:

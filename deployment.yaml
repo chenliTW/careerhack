@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: careerhack-business
-  replicas: 4
+  replicas: 2
   template:
     metadata:
       labels:
@@ -34,7 +34,7 @@ spec:
                 - node5
       containers:
       - name: careerhack-business
-        image: le3721/careerhack-business:latest
+        image: zxvbjl/aa:latest
         imagePullPolicy: Always
         command: ["python3","app/main.py"]
         env:
@@ -71,10 +71,13 @@ spec:
         tolerationSeconds: 1
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: careerhack-inventory
+  annotations:
+    downscaler/exclude: "true"
 spec:
+  serviceName: "careerhack-inventory"
   selector:
     matchLabels:
       app: careerhack-inventory
@@ -101,10 +104,11 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
+                - node1
                 - node2
       containers:
       - name: careerhack-inventory
-        image: le3721/careerhack-inventory:latest
+        image: zxvbjl/bb:latest
         imagePullPolicy: Always
         command: ["python3","app/main.py"]
         env:
@@ -116,9 +120,17 @@ spec:
           httpGet:
             path: /api/health
             port: 8200
-          initialDelaySeconds: 10
+          initialDelaySeconds: 5
           periodSeconds: 1
           failureThreshold: 4
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - /app/check-readiness.sh
+          initialDelaySeconds: 5
+          periodSeconds: 1
         resources:
           limits:
             cpu: "2"
@@ -170,7 +182,7 @@ spec:
                 - node3
       containers:
       - name: careerhack-storage
-        image: le3721/careerhack-storage:latest
+        image: zxvbjl/cc:latest
         imagePullPolicy: Always
         command: ["python3","app/main.py"]
         env:
