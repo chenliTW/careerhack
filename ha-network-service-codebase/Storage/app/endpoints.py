@@ -48,7 +48,7 @@ def query(location: str, date: str) -> list[Record]:
 @app.get('/report')
 def report(location: str, date: str) -> Report:
     ret = pre.find({ "location": location , "timestamp": { "$regex": "^" + date } })
-
+    ret = [ Record(**record) for record in ret]
     if len(ret) == 0:
         data_list = query(location=location, date=date)
         report: Report = Report(location=location, date=date)
