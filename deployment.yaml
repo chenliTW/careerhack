@@ -21,7 +21,7 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - node4
+                - node1
                 - node5
       containers:
       - name: careerhack-business
@@ -161,8 +161,8 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - node1
                 - node3
+                - node4
       containers:
       - name: careerhack-storage
         image: zxvbjl/cc:latest
@@ -183,15 +183,15 @@ spec:
         #  initialDelaySeconds: 5
         #  periodSeconds: 1
         #  failureThreshold: 2
-        readinessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - /app/check-readiness.sh
-          initialDelaySeconds: 5
-          periodSeconds: 1
-          failureThreshold: 1
+        #readinessProbe:
+        #  exec:
+        #    command:
+        #    - /bin/sh
+        #    - -c
+        #    - /app/check-readiness.sh
+        #  initialDelaySeconds: 5
+        #  periodSeconds: 1
+        #  failureThreshold: 1
         resources:
           limits:
             cpu: "2"
