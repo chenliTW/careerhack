@@ -43,14 +43,15 @@ def query(location: str, date: str) -> list[Record]:
 def report(location: str, date: str) -> Report:
     rep_len=r.llen(location+date)
     
-    if location+date+"len" in program_cache:
-        cache_len = program_cache[location+date+"len"]
-        if int(cache_len) == rep_len:
-            cache = program_cache[location+date+str(rep_len)]
+    old_cache_len=r.get(location+date+"len")
+    if old_cache_len is not None:
+        cache = pickle.loads(r.get(location+date+str(rep_len)))
+        if cache is not None:
+            print("cache hit")
             return cache
         else:
-            new_datas=r.lrange(location+date, cache_len+1, -1)
-            cache = program_cache[location+date+str(cache_len)]
+            new_datas=r.lrange(location+date, old_cache_len+1, -1)
+            cache = pickle.loads(r.get(location+date+str(old_cache_len)))
             for data in new_datas:
                 record = pickle.loads(data)
                 cache.a += record.a
@@ -58,8 +59,8 @@ def report(location: str, date: str) -> Report:
                 cache.c += record.c
                 cache.d += record.d
                 cache.count += 1
-            program_cache[location+date+"len"]=cache.count
-            program_cache[location+date+str(cache.count)]=cache
+            r.set(location+date+"len",cache.count)
+            r.set(location+date+str(cache.count),pickle.dumps(cache))
             return cache
     else:
         data_list = query(location=location, date=date)
@@ -70,13 +71,13 @@ def report(location: str, date: str) -> Report:
         report.c = sum(r.c for r in data_list)
         report.d = sum(r.d for r in data_list)
 
-    if location+date+"len" in program_cache:
-        old_cache_len = program_cache[location+date+"len"]
-        del program_cache[location+date+"len"]
-        del program_cache[location+date+str(old_cache_len)]
+    #if location+date+"len" in program_cache:
+    #    old_cache_len = program_cache[location+date+"len"]
+    #    del program_cache[location+date+"len"]
+    #    del program_cache[location+date+str(old_cache_len)]
 
-    program_cache[location+date+"len"]=report.count
-    program_cache[location+date+str(report.count)]=report
+    r.set(location+date+"len",report.count)
+    r.set(location+date+str(report.count),pickle.dumps(report))
     return report
 
 
