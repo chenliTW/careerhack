@@ -50,8 +50,10 @@ def report(location: str, date: str) -> Report:
             print("cache hit")
             return pickle.loads(cache)
         else:
-            new_datas=r.lrange(location+date, old_cache_len+1, -1)
-            cache = pickle.loads(r.get(location+date+str(old_cache_len)))
+            old_cache=r.get(location+date+str(old_cache_len.decode()))
+            #print(old_cache,location+date+str(old_cache_len))
+            new_datas=r.lrange(location+date, int(old_cache_len)+1, -1)
+            cache = pickle.loads(old_cache)
             for data in new_datas:
                 record = pickle.loads(data)
                 cache.a += record.a
