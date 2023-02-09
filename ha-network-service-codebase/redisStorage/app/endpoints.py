@@ -45,10 +45,10 @@ def report(location: str, date: str) -> Report:
     
     old_cache_len=r.get(location+date+"len")
     if old_cache_len is not None:
-        cache = pickle.loads(r.get(location+date+str(rep_len)))
+        cache = r.get(location+date+str(rep_len))
         if cache is not None:
             print("cache hit")
-            return cache
+            return pickle.loads(cache)
         else:
             new_datas=r.lrange(location+date, old_cache_len+1, -1)
             cache = pickle.loads(r.get(location+date+str(old_cache_len)))
