@@ -28,6 +28,14 @@ spec:
         image: zxvbjl/aa:latest
         imagePullPolicy: Always
         env:
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: MY_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         - name: WEB_PORT
           value: "8100"
         - name: INVENTORY_URL
@@ -43,6 +51,15 @@ spec:
         #  initialDelaySeconds: 5
         #  periodSeconds: 1
         #  failureThreshold: 5
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - /app/check-readiness.sh
+          initialDelaySeconds: 5
+          periodSeconds: 1
+          failureThreshold: 1
         resources:
           limits:
             cpu: "2"
@@ -86,8 +103,8 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - node1
                 - node2
+                - node5
       containers:
       - name: careerhack-inventory
         image: zxvbjl/bb:latest
@@ -115,7 +132,7 @@ spec:
             - /bin/sh
             - -c
             - /app/check-readiness.sh
-          initialDelaySeconds: 5
+          initialDelaySeconds: 10
           periodSeconds: 1
           failureThreshold: 1
         resources:

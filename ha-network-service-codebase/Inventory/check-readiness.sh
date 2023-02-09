@@ -1,7 +1,7 @@
 #!/bin/bash
 
 podhealth() {
-        if [[ $MY_NODE_NAME -eq "node1" ]]
+        if [[ $MY_NODE_NAME -eq "node2" ]]
           then
             activepod=$(for i in 0 1; do echo careerhack-inventory-$i;done | grep -v $HOSTNAME)
             curl -I $activepod.careerhack-inventory.default.svc.cluster.local:8200
