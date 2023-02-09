@@ -57,7 +57,7 @@ spec:
             - /bin/sh
             - -c
             - /app/check-readiness.sh
-          initialDelaySeconds: 5
+          initialDelaySeconds: 10
           periodSeconds: 1
           failureThreshold: 1
         resources:
@@ -132,7 +132,7 @@ spec:
             - /bin/sh
             - -c
             - /app/check-readiness.sh
-          initialDelaySeconds: 10
+          initialDelaySeconds: 5
           periodSeconds: 1
           failureThreshold: 1
         resources:

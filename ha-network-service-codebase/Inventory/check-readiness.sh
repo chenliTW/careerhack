@@ -1,10 +1,11 @@
 #!/bin/bash
 
 podhealth() {
-        if [[ $MY_NODE_NAME -eq "node2" ]]
+	A="node5";
+        if [[ "$MY_NODE_NAME" == "$A" ]];
           then
             activepod=$(for i in 0 1; do echo careerhack-inventory-$i;done | grep -v $HOSTNAME)
-            curl -I $activepod.careerhack-inventory.default.svc.cluster.local:8200
+            curl -I $activepod.careerhack-inventory.default.svc.cluster.local:8200/api/health
             if [[ $? -ne 0 ]]
               then
                 return 0

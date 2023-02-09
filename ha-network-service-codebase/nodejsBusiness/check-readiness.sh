@@ -1,7 +1,8 @@
 #!/bin/bash
 
 podhealth() {
-        if [[ $MY_NODE_NAME -eq "node5" ]]
+        AA="node5";
+        if [[ "$MY_NODE_NAME" == "$AA" ]]
           then
             A=$(dig +short careerhack-inventory-0.careerhack-inventory.default.svc.cluster.local)
             B=$(dig +short careerhack-inventory-1.careerhack-inventory.default.svc.cluster.local)

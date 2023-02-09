@@ -77,10 +77,11 @@ app.get("/api/health", (req, res) => {
     res.json({status: "ok"});
 })
 
-process.on('SIGINT', function() {
-    process.exit(0);
- });
 
 app.listen(port, () => {
     console.log(`listening on port ${port}`)
 })
+
+process.on('SIGINT', function() {
+    process.exit(0);
+});
