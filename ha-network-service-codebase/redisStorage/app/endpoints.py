@@ -18,9 +18,7 @@ settings: Settings = get_settings()
 
 app: FastAPI = FastAPI()
 
-CACHE: dict[
-    str, dict[str, list[Record]],
-] = defaultdict(lambda: defaultdict(list))
+program_cache={}
 
 sentinel = Sentinel([('redis-redis-ha.default.svc.cluster.local', 26379)])
 r = sentinel.master_for('mymaster')
@@ -43,9 +41,13 @@ def query(location: str, date: str) -> list[Record]:
 
 @app.get('/report')
 def report(location: str, date: str) -> Report:
-    datas=r.lrange(location+date+'CACHE', 0, -1)
-    if len(datas) == 1:
-        return pickle.loads(datas[0])
+    rep_len=r.llen(location+date)
+    
+    if location+date+"len" in program_cache:
+        cache_len = program_cache[location+date+"len"]
+        if int(cache_len) == rep_len:
+            cache = program_cache[location+date+str(rep_len)]
+            return cache
 
     data_list = query(location=location, date=date)
     report: Report = Report(location=location, date=date)
@@ -54,7 +56,14 @@ def report(location: str, date: str) -> Report:
     report.b = sum(r.b for r in data_list)
     report.c = sum(r.c for r in data_list)
     report.d = sum(r.d for r in data_list)
-    r.rpush(location+date+'CACHE',pickle.dumps(report))
+
+    if location+date+"len" in program_cache:
+        old_cache_len = program_cache[location+date+"len"]
+        del program_cache[location+date+"len"]
+        del program_cache[location+date+str(old_cache_len)]
+
+    program_cache[location+date+"len"]=report.count
+    program_cache[location+date+str(report.count)]=report
     return report
 
 
