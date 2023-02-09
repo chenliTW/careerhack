@@ -29,13 +29,7 @@ r = sentinel.master_for('mymaster')
 def save(record: Record) -> Result:
     #location_dict = CACHE[record.location]
     #records = location_dict[record.timestamp[0:10]]  # datetime to date
-    recv=r.get(record.location+record.timestamp[0:10]) 
-    if recv is None:
-        r.set(record.location+record.timestamp[0:10], pickle.dumps([record]))
-    else:
-        records = pickle.loads(recv)
-        records.append(record)
-        r.set(record.location+record.timestamp[0:10], pickle.dumps(records))
+    r.rpush(record.location+record.timestamp[0:10],pickle.dumps(record))
     return Result.ok()
 
 
@@ -43,10 +37,8 @@ def save(record: Record) -> Result:
 def query(location: str, date: str) -> list[Record]:
     #if location_dict := CACHE.get(location):
     #    return location_dict.get(date)
-    recv=r.get(location+date)
-    if recv is not None:
-        return pickle.loads(recv) 
-    return []
+    datas=r.lrange(location+date, 0, -1)
+    return [ pickle.loads(data) for data in datas]
 
 
 @app.get('/report')
@@ -63,5 +55,6 @@ def report(location: str, date: str) -> Report:
 
 @app.post('/clean')
 def clean() -> Result:
-    CACHE.clear()
+    keys = r.keys('*')
+    r.delete(*keys)
     return Result.ok()
