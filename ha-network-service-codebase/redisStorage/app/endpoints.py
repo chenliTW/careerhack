@@ -47,31 +47,32 @@ def report(location: str, date: str) -> Report:
     if old_cache_len is not None:
         cache = r.get(location+date+str(rep_len))
         if cache is not None:
-            print("cache hit")
+            #print("cache hit")
             return pickle.loads(cache)
         else:
             old_cache=r.get(location+date+str(old_cache_len.decode()))
             #print(old_cache,location+date+str(old_cache_len))
-            new_datas=r.lrange(location+date, int(old_cache_len)+1, -1)
-            cache = pickle.loads(old_cache)
-            for data in new_datas:
-                record = pickle.loads(data)
-                cache.a += record.a
-                cache.b += record.b
-                cache.c += record.c
-                cache.d += record.d
-                cache.count += 1
-            r.set(location+date+"len",cache.count)
-            r.set(location+date+str(cache.count),pickle.dumps(cache))
-            return cache
-    else:
-        data_list = query(location=location, date=date)
-        report: Report = Report(location=location, date=date)
-        report.count = len(data_list)
-        report.a = sum(r.a for r in data_list)
-        report.b = sum(r.b for r in data_list)
-        report.c = sum(r.c for r in data_list)
-        report.d = sum(r.d for r in data_list)
+            if old_cache is not None:
+                new_datas=r.lrange(location+date, int(old_cache_len)+1, -1)
+                cache = pickle.loads(old_cache)
+                for data in new_datas:
+                    record = pickle.loads(data)
+                    cache.a += record.a
+                    cache.b += record.b
+                    cache.c += record.c
+                    cache.d += record.d
+                    cache.count += 1
+                r.set(location+date+"len",cache.count)
+                r.set(location+date+str(cache.count),pickle.dumps(cache))
+                return cache
+    
+    data_list = query(location=location, date=date)
+    report: Report = Report(location=location, date=date)
+    report.count = len(data_list)
+    report.a = sum(r.a for r in data_list)
+    report.b = sum(r.b for r in data_list)
+    report.c = sum(r.c for r in data_list)
+    report.d = sum(r.d for r in data_list)
 
     #if location+date+"len" in program_cache:
     #    old_cache_len = program_cache[location+date+"len"]
