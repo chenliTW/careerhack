@@ -6,10 +6,12 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json()); 
 
 const fetch = require('node-fetch');
+const request = require('request');
 
 app.post('/api/order', (req, res) => {
     fetch(`${process.env.INVENTORY_URL}/material`,{
         method: 'POST',
+        compress: true,
         body: JSON.stringify(req.body),
         headers: { 'Content-Type': 'application/json' }
     })
@@ -45,18 +47,23 @@ app.post('/api/order', (req, res) => {
 })
 
 app.get('/api/record', (req, res) => {
-    fetch(`${process.env.STORAGE_URL}/records?location=${req.query["location"]}&date=${req.query["date"]}`)
+    /*fetch(`${process.env.STORAGE_URL}/records?location=${req.query["location"]}&date=${req.query["date"]}`,{compress: true})
     .then((response) => {
         response.json().then(
             (data) => {
                 res.json(data);
             }
         )
-    })
+    })*/
+    //res.redirect(`http://35.193.9.161:30300/api/records?location=${req.query["location"]}&date=${req.query["date"]}`);
+    req.pipe(request(`${process.env.STORAGE_URL}/records?location=${req.query["location"]}&date=${req.query["date"]}`)).pipe(res);
+    //apiProxy.web(req, res, {target: serverOne});
+    //request(`${process.env.STORAGE_URL}/records?location=${req.query["location"]}&date=${req.query["date"]}`).pipe(res);
 })
+
 
 app.post('/api/report', (req, res) => {
-    fetch(`${process.env.STORAGE_URL}/report?location=${req.query["location"]}&date=${req.query["date"]}`)
+    fetch(`${process.env.STORAGE_URL}/report?location=${req.query["location"]}&date=${req.query["date"]}`,{compress: true})
     .then((response) => {
         response.json().then(
             (data) => {
@@ -66,10 +73,14 @@ app.post('/api/report', (req, res) => {
     })
 })
 
-app.get("api/health", (req, res) => {
+app.get("/api/health", (req, res) => {
     res.json({status: "ok"});
 })
 
+process.on('SIGINT', function() {
+    process.exit(0);
+ });
+
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`listening on port ${port}`)
 })

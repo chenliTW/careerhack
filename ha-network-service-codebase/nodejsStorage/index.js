@@ -10,6 +10,9 @@ cachegoose(mongoose, {
 });
 
 const bodyParser = require('body-parser');
+//const compression = require('compression')
+
+//app.use(compression())
 app.use(bodyParser.json()); 
 
 mongoose.connect("mongodb+srv://mongodb:mongodb@mongodb-svc.default.svc.cluster.local/admin?replicaSet=mongodb&ssl=false");
@@ -53,13 +56,14 @@ app.post('/api/records', (req, res) => {
         if (err) {
             res.json({success:false});
         } else {
+            cachegoose.clearCache('cache');
             res.json({success:true});
         }
     });
 })
 
 app.get('/api/records', (req, res) => {
-    records.find({location: req.query["location"],timestamp:{$regex:`^${req.query["date"]}`}},'-_id -__v').cache(120).exec((err, records) => {
+    records.find({location: req.query["location"],timestamp:{$regex:`^${req.query["date"]}`}},'-_id -__v').cache(300,'cache').exec((err, records) => {
         if (err) {
             res.json([]);
         } else {
@@ -69,7 +73,7 @@ app.get('/api/records', (req, res) => {
 })
 
 app.get('/api/report', (req, res) => {
-    records.find({location: req.query["location"],timestamp:{$regex:`^${req.query["date"]}`}},'-_id -__v').cache(120).exec((err, records) => {
+    records.find({location: req.query["location"],timestamp:{$regex:`^${req.query["date"]}`}},'-_id -__v').cache(300,'cache').exec((err, records) => {
         if (err) {
             res.json([]);
         } else {
@@ -93,14 +97,26 @@ app.get('/api/report', (req, res) => {
 })
 
 app.get('/api/clean', (req, res) => {
-    records.deleteMany({});
-    res.json({status: "ok"});
+    records.deleteMany({}).exec((err) => {
+        if (err) {
+            res.json({success:false});
+        } else {
+            cachegoose.clearCache('cache');
+            res.json({success:true});
+        }
+    });
 })
 
 app.get("api/health", (req, res) => {
     res.json({status: "ok"});
 })
 
+process.on('SIGINT', function() {
+    mongoose.connection.close().then(function(err) {
+      process.exit(err ? 1 : 0);
+    });
+ });
+
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`listening on port ${port}`)
 })

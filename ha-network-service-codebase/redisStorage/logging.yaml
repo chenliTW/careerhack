@@ -1,0 +1,21 @@
+version: 1
+disable_existing_loggers: no
+formatters:
+  standard:
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+loggers:
+  "uvicorn.access":
+    level: ERROR
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: standard
+    stream: ext://sys.stdout
+
+root:
+  level: INFO
+  handlers: [console]
+  propagate: no
