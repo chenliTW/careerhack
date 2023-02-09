@@ -43,6 +43,10 @@ def query(location: str, date: str) -> list[Record]:
 
 @app.get('/report')
 def report(location: str, date: str) -> Report:
+    datas=r.lrange(location+date+'CACHE', 0, -1)
+    if len(datas) == 1:
+        return pickle.loads(datas[0])
+
     data_list = query(location=location, date=date)
     report: Report = Report(location=location, date=date)
     report.count = len(data_list)
@@ -50,6 +54,7 @@ def report(location: str, date: str) -> Report:
     report.b = sum(r.b for r in data_list)
     report.c = sum(r.c for r in data_list)
     report.d = sum(r.d for r in data_list)
+    r.rpush(location+date+'CACHE',pickle.dumps(report))
     return report
 
 
