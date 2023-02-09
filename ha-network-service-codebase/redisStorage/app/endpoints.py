@@ -48,14 +48,27 @@ def report(location: str, date: str) -> Report:
         if int(cache_len) == rep_len:
             cache = program_cache[location+date+str(rep_len)]
             return cache
-
-    data_list = query(location=location, date=date)
-    report: Report = Report(location=location, date=date)
-    report.count = len(data_list)
-    report.a = sum(r.a for r in data_list)
-    report.b = sum(r.b for r in data_list)
-    report.c = sum(r.c for r in data_list)
-    report.d = sum(r.d for r in data_list)
+        else:
+            new_datas=r.lrange(location+date, cache_len+1, -1)
+            cache = program_cache[location+date+str(cache_len)]
+            for data in new_datas:
+                record = pickle.loads(data)
+                cache.a += record.a
+                cache.b += record.b
+                cache.c += record.c
+                cache.d += record.d
+                cache.count += 1
+            program_cache[location+date+"len"]=cache.count
+            program_cache[location+date+str(cache.count)]=cache
+            return cache
+    else:
+        data_list = query(location=location, date=date)
+        report: Report = Report(location=location, date=date)
+        report.count = len(data_list)
+        report.a = sum(r.a for r in data_list)
+        report.b = sum(r.b for r in data_list)
+        report.c = sum(r.c for r in data_list)
+        report.d = sum(r.d for r in data_list)
 
     if location+date+"len" in program_cache:
         old_cache_len = program_cache[location+date+"len"]
