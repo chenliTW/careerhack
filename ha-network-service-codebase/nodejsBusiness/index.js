@@ -47,18 +47,7 @@ app.post('/api/order', (req, res) => {
 })
 
 app.get('/api/record', (req, res) => {
-    /*fetch(`${process.env.STORAGE_URL}/records?location=${req.query["location"]}&date=${req.query["date"]}`,{compress: true})
-    .then((response) => {
-        response.json().then(
-            (data) => {
-                res.json(data);
-            }
-        )
-    })*/
-    //res.redirect(`http://35.193.9.161:30300/api/records?location=${req.query["location"]}&date=${req.query["date"]}`);
     req.pipe(request(`${process.env.STORAGE_URL}/records?location=${req.query["location"]}&date=${req.query["date"]}`)).pipe(res);
-    //apiProxy.web(req, res, {target: serverOne});
-    //request(`${process.env.STORAGE_URL}/records?location=${req.query["location"]}&date=${req.query["date"]}`).pipe(res);
 })
 
 
