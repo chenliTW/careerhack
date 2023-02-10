@@ -61,6 +61,7 @@ def report(location: str, date: str) -> Report:
                     cache.b += record.b
                     cache.c += record.c
                     cache.d += record.d
+                    cache.material += record.material
                     cache.count += 1
                 r.set(location+date+"len",cache.count)
                 r.set(location+date+str(cache.count),pickle.dumps(cache))
@@ -73,7 +74,7 @@ def report(location: str, date: str) -> Report:
     report.b = sum(r.b for r in data_list)
     report.c = sum(r.c for r in data_list)
     report.d = sum(r.d for r in data_list)
-
+    report.material = sum(r.material for r in data_list)
     #if location+date+"len" in program_cache:
     #    old_cache_len = program_cache[location+date+"len"]
     #    del program_cache[location+date+"len"]
