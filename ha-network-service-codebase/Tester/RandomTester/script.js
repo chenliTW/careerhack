@@ -52,7 +52,7 @@ const GETApi = () => {
   const date  = 'data=' + GETKeys().date;
   const url = 'http://34.123.52.100:30100/api/report?';
   const sent = url.concat(location, '&', date);
-  const res = http.get('http://34.123.52.100:30100/api/report?location=l1&date=2023-01-01');
+  const res = http.get('http://34.123.52.100:30100/api/record?location=l1&date=2023-01-01');
   //const res = http.get(sent);
 
   check(res, {
@@ -61,6 +61,6 @@ const GETApi = () => {
 }
 
 export default function () {
-  POSTApi();
-  //GETApi();
+  //POSTApi();
+  GETApi();
 }
