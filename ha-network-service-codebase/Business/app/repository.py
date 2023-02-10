@@ -30,6 +30,9 @@ class Repository(ABC):
     def report(self, location: str, date: str) -> Report:
         raise NotImplementedError()
 
+    @abstractmethod
+    def truth(self, record: Record) -> bool:
+        raise NotImplementedError()
 
 URL_SAVE_RECORD: str = f'{settings.STORAGE_URL}/records'
 
@@ -65,3 +68,14 @@ class RestRepository(Repository):
         #    except requests.exceptions.ConnectionError:
         #        continue
         #    break
+
+    def truth(self, record: Record) -> bool:
+        url = f'{settings.STORAGE_URL}/truth'
+        response = requests.post(url=url, json=record.dict())
+        #while True:
+        #    try:
+        #        response = requests.post(url=url, json=record.dict())
+        #    except requests.exceptions.ConnectionError:
+        #        continue
+        #    break
+        return Result(**response.json())
