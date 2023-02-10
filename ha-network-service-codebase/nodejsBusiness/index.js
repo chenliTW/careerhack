@@ -51,7 +51,7 @@ app.get('/api/record', (req, res) => {
 })
 
 
-app.post('/api/report', (req, res) => {
+app.get('/api/report', (req, res) => {
     fetch(`${process.env.STORAGE_URL}/report?location=${req.query["location"]}&date=${req.query["date"]}`,{compress: true})
     .then((response) => {
         response.json().then(

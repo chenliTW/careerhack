@@ -17,7 +17,7 @@ export const options = {
 
 
 const POSTApi = () => {
-  
+
   const stable = JSON.stringify({
     "location": "l1",
     "timestamp": "2021-03-01T00:00:00.000Z",
@@ -28,7 +28,7 @@ const POSTApi = () => {
       "d": 28
     }
   });
-  
+
   const headers = {
     'accept': 'application/json',
     'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ const POSTApi = () => {
 }
 
 const GETApi = () => {
-  
+
   const location = 'location=' + GETKeys().location;
   const date  = 'data=' + GETKeys().date;
   const url = 'http://34.123.52.100:30100/api/report?';
@@ -61,6 +61,6 @@ const GETApi = () => {
 }
 
 export default function () {
-  //POSTApi();
-  GETApi();
+  POSTApi();
+  //GETApi();
 }
