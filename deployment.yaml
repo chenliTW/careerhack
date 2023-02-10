@@ -109,7 +109,6 @@ spec:
       - name: careerhack-inventory
         image: zxvbjl/bb:latest
         imagePullPolicy: Always
-        command: ["python3","app/main.py"]
         env:
         - name: WEB_PORT
           value: "8200"
