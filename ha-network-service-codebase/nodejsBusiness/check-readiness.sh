@@ -1,8 +1,8 @@
 #!/bin/bash
 
 podhealth() {
-        #AA="tsmchack2023-gce-grp4-5";
-        AA="node5";
+        AA="tsmchack2023-gce-grp4-5";
+        #AA="node5";
         if [[ "$MY_NODE_NAME" == "$AA" ]]
           then
             A=$(dig +short careerhack-inventory-0.careerhack-inventory.default.svc.cluster.local)
