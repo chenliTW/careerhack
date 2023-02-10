@@ -12,7 +12,10 @@ app.post('/api/order', (req, res) => {
     fetch(`${process.env.INVENTORY_URL}/material`,{
         method: 'POST',
         compress: true,
-        body: JSON.stringify(req.body),
+        body: JSON.stringify({a: req.body["data"]["a"],
+        b: req.body["data"]["b"],
+        c: req.body["data"]["c"],
+        d: req.body["data"]["d"]}),
         headers: { 'Content-Type': 'application/json' }
     })
     .then((response) => {
@@ -23,7 +26,6 @@ app.post('/api/order', (req, res) => {
                     timestamp: req.body["timestamp"],
                     signature: data["signature"],
                     material: data["material"],
-                    material: req.body["data"]["material"],
                     a: req.body["data"]["a"],
                     b: req.body["data"]["b"],
                     c: req.body["data"]["c"],
@@ -66,6 +68,16 @@ app.get("/api/health", (req, res) => {
     res.json({status: "ok"});
 })
 
+app.get("/api/clean", (req, res) => {
+    fetch(`${process.env.STORAGE_URL}/clean`,{compress: true, method: 'POST'})
+    .then((response) => {
+        response.json().then(
+            (data) => {
+                res.json(data);
+            }
+        )
+    })
+});
 
 app.listen(port, () => {
     console.log(`listening on port ${port}`)

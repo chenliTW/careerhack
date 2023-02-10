@@ -9,7 +9,7 @@ export const options = {
     scenarios: {
       send: {
         executor: 'shared-iterations',
-        vus: 1, // number of threads
+        vus: 100, // number of threads
         iterations: 1,
         maxDuration: '120s',
       },
@@ -22,7 +22,7 @@ const data_tsmc = new SharedArray("test-data", function () {
 });
 
 const ORDERApi = () => {
-  
+
 
   const stable = JSON.stringify({
     "location": "l1",
@@ -34,7 +34,7 @@ const ORDERApi = () => {
       "d": 28
     }
   });
-  
+
   const params = {
     timeout: "10s",
     headers: {
@@ -45,7 +45,7 @@ const ORDERApi = () => {
       type: "send",
     },
   };
-  
+
   const headers = {
     'accept': 'application/json',
     'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ const ORDERApi = () => {
 }
 
 const RECORDApi = () => {
-  
+
 
   const location = 'location=' + RECORDKeys().location;
   const date  = 'data=' + RECORDKeys().date;
@@ -99,7 +99,7 @@ const REPORTApi = () => {
   const url = 'http://34.123.52.100:30100/api/report?';
   const sent = url.concat(location, '&', date);
   //const res = http.get(sent);
-  const res = http.get('http://34.123.52.100:30100/api/report?location=l1&date=2023-01-01');  
+  const res = http.get('http://34.123.52.100:30100/api/report?location=l1&date=2023-01-01');
   console.log(res);
   check(res,{
     'GET status is 200 -REPORT': (r) => res.status === 200,
