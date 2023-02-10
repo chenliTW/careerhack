@@ -21,8 +21,8 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - node1
-                - node5
+                - tsmchack2023-gce-grp4-1
+                - tsmchack2023-gce-grp4-5
       containers:
       - name: careerhack-business
         image: zxvbjl/aa:latest
@@ -103,8 +103,8 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - node2
-                - node5
+                - tsmchack2023-gce-grp4-2
+                - tsmchack2023-gce-grp4-5
       containers:
       - name: careerhack-inventory
         image: zxvbjl/bb:latest
@@ -178,8 +178,8 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - node3
-                - node4
+                - tsmchack2023-gce-grp4-3
+                - tsmchack2023-gce-grp4-4
       containers:
       - name: careerhack-storage
         image: zxvbjl/cc:latest
