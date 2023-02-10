@@ -2,7 +2,7 @@ import http from 'k6/http';
 import { SharedArray } from "k6/data";
 import { scenario } from "k6/execution";
 import { check } from 'k6';
-import { server } from './config.js';
+import { server } from './config.js.js';
 
 const dataList = new SharedArray("test-data", function () {
   return JSON.parse(open("./data.json"));
