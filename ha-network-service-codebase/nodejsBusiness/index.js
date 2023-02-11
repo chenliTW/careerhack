@@ -7,13 +7,17 @@ app.use(bodyParser.json());
 
 require('es6-promise').polyfill();
 const fetch = require('node-fetch');
-var fetch_retry = require('fetch-retry')(fetch);
+var fetch_retry = require('fetch-retry')(fetch,{
+    retries: 300,
+    retryDelay: 1000
+  });
 const request = require('request');
 var timeout = require('connect-timeout'); //express v4
 app.use(timeout('300s'))
 
 app.post('/api/order', (req, res) => {
-    res.json({success:true});
+    //res.json({success:true});
+    //res.set("Connection", "close");
     fetch_retry(`${process.env.INVENTORY_URL}/material`,{
         method: 'POST',
         compress: true,
@@ -21,8 +25,6 @@ app.post('/api/order', (req, res) => {
         b: req.body["data"]["b"],
         c: req.body["data"]["c"],
         d: req.body["data"]["d"]}),
-        retries: 100,
-        retryDelay: 3000,
         headers: { 'Content-Type': 'application/json' }
     })
     .then((response) => {
@@ -41,14 +43,12 @@ app.post('/api/order', (req, res) => {
                 fetch_retry(`${process.env.STORAGE_URL}/records`,{
                     method: 'POST',
                     body: JSON.stringify(newRecord),
-                    headers: { 'Content-Type': 'application/json' },
-                    retries: 100,
-                    retryDelay: 3000
+                    headers: { 'Content-Type': 'application/json' }
                 })
                 .then((response) => {
                     response.json().then(
                         (status) => {
-                            //res.json(status);
+                            res.json(status);
                         }
                     )
                 })  
@@ -64,9 +64,7 @@ app.get('/api/record', (req, res) => {
 
 app.get('/api/report', (req, res) => {
     fetch(`${process.env.STORAGE_URL}/report?location=${req.query["location"]}&date=${req.query["date"]}`,
-    {compress: true,
-    retries: 100,
-    retryDelay: 3000}
+    {compress: true}
     )
     .then((response) => {
         response.json().then(
