@@ -10,7 +10,7 @@ const fetch = require('node-fetch');
 var fetch_retry = require('fetch-retry')(fetch);
 const request = require('request');
 var timeout = require('connect-timeout'); //express v4
-app.use(timeout('300s'))
+
 
 app.post('/api/order', (req, res) => {
     res.json({success:true});
