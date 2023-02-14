@@ -30,8 +30,9 @@ const ORDER_TSMC_Api = () => {
     const data = data_tsmc[scenario.iterationInTest]; //tsmc data
     
     const payload_1  = JSON.stringify(data);
-    //const res = http.post('http://34.80.73.51:80/api/order', payload_1, {headers});//tsmc random
-    const res = http.post('http://34.123.52.100:30100/api/order', payload_1, {headers});
+    
+    const res = http.post('http://34.80.73.51:80/api/order', payload_1, {headers});//tsmc random
+    //const res = http.post('http://34.123.52.100:30100/api/order', payload_1, {headers});
 
     check(res, {
       'Post status is 200 -ORDER-1': (r) => res.status === 200,

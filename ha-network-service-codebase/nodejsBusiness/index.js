@@ -43,7 +43,7 @@ app.post('/api/order', (req, res) => {
                     body: JSON.stringify(newRecord),
                     headers: { 'Content-Type': 'application/json' },
                     retries: 100,
-                    retryDelay: 3000
+                    retryDelay: 3000 //ms
                 })
                 .then((response) => {
                     response.json().then(

@@ -54,10 +54,10 @@ const ORDERApi = () => {
   //const data = data_tsmc[scenario.iterationInTest]; //tsmc data
   //const data = ORDERpayload(); // random data
   //const payload_1  = JSON.stringify(data);
-  //const res = http.post('http://34.80.73.51:80/api/order', stable, {headers});//tsmc stable
+  const res = http.post('http://34.80.73.51:80/api/order', stable, {headers});//tsmc stable
   //const res = http.post('http://34.80.73.51:80/api/order', payload_1, {headers});//tsmc random
   //const res = http.post('http://34.80.73.51:80/api/order', payload_1, params);//tsmc with params
-  const res = http.post('http://34.123.52.100:30100/api/order', stable, {headers});//stable old
+  //const res = http.post('http://34.123.52.100:30100/api/order', stable, {headers});//stable old
   //const res = http.post('http://34.123.52.100:30100/api/order', payload_1, {headers});//random old
 
   check(res, {
@@ -75,8 +75,8 @@ const RECORDApi = () => {
   const url = 'http://34.80.73.51:80/api/record?';
   const sent = url.concat(location, '&', date);
   //const res = http.get('http://34.123.52.100:30100/api/record?location=l1&date=2023-01-01');//stable old
-  //const res = http.get('http://34.80.73.51:80/api/record?location=TSMC&date=2023-02-10');//old
-  const res = http.get('http://34.123.52.100:30100/api/record?location=TSMC&date=2023-02-10');//old
+  const res = http.get('http://34.81.8.100:80/api/record?location=TSMC&date=2023-02-10');//old
+  //const res = http.get('http://34.123.52.100:30100/api/record?location=TSMC&date=2023-02-10');//old
   //const res = http.get(sent);//random
   console.log(res);
   check(res, {
@@ -105,8 +105,8 @@ const REPORTApi = () => {
   const url = 'http://34.123.52.100:30100/api/report?';
   const sent = url.concat(location, '&', date);
   //const res = http.get(sent);
-  //const res = http.get('http://34.80.73.51:80/api/report?location=TSMC&date=2023-02-10'); 
-  const res = http.get('http://34.123.52.100:30100/api/report?location=TSMC&date=2023-02-10');  
+  const res = http.get('http://34.81.8.100:80/api/report?location=TSMC&date=2023-02-10'); 
+  //const res = http.get('http://34.123.52.100:30100/api/report?location=TSMC&date=2023-02-10');  
   console.log(res);
   check(res,{
     'GET status is 200 -REPORT': (r) => res.status === 200,
@@ -118,7 +118,7 @@ const REPORTApi = () => {
 
 const CLEANapi = () => {
   //const res = http.get('http://34.80.73.51:80/api/clean');
-  const res = http.get('http://34.123.52.100:30100/api/clean');
+  const res = http.get('http://34.81.8.100:80:30100/api/clean');
   console.log(res);
   check(res,{               
     'GET status is 200 -CLEAN': (r) => res.status === 200,
@@ -130,5 +130,5 @@ export default function () {
   ORDERApi();
   RECORDApi();
   REPORTApi();
-  CLEANapi();
+  //CLEANapi();
 }
